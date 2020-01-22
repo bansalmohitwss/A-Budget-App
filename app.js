@@ -27,6 +27,35 @@
          }
      };
      
+     return {
+         addItem: function(type,desc,value){
+             var newItem, Id;
+             
+             // Create New id which will be last_id+1
+             if(data.allItems[type].length === 0){
+                 Id=0;
+             } else {
+                 Id = data.allItems[type][data.allItems[type].length-1].id+1;
+             }
+             
+             
+             if(type === 'inc'){
+                 newItem = new Income(Id,desc,value);
+             } else if(type === 'exp') {
+                 newItem = new Expense(Id,desc,value);
+             }
+             
+             // Add element to data structure
+             data.allItems[type].push(newItem);
+             
+             return newItem;
+         },
+        
+         testing: function(){
+             console.log(data);
+         }
+     };
+     
 })();
 
 
@@ -79,9 +108,16 @@ var Controller = (function(budgetCtrl,uiCtrl){
     };
     
     var CtrladdItem = function(){
-    
-        var input = uiCtrl.getInput();
-        console.log(input);
+        var input,newItem;
+        
+        // Fetch Input from UI Controller
+        input = uiCtrl.getInput();
+        
+        // add input to data structure
+        newItem = budgetCtrl.addItem(input.type,input.description,input.value);
+        
+        
+        
     }
     
     
