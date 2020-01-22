@@ -88,7 +88,7 @@ var uiController = (function(){
         },
         
         addListItem: function(item, type){
-            var html,newHtml,element;
+            var html,element;
             
             if(type === 'inc'){
                 element = DOMStrings.incomeContainer;
@@ -101,8 +101,11 @@ var uiController = (function(){
                 html = '<div class="item clearfix" id="expense-%id%"><div class="item__description">%description%</div><div class="right clearfix">    <div class="item__value">%value%</div><div class="item__percentage">21%</div>   <div class="item__delete">       <button class="item__delete--btn"><i class="ion-ios-close-outline"></i></button>   </div> </div></div>';
             }
             
+            html = html.replace('%id%',item.id);
+            html = html.replace('%description%',item.description);
+            html = html.replace('%value%',item.value);
             
-            
+            document.querySelector(element).insertAdjacentHTML('beforeend',html);
             
         }
     };
@@ -139,7 +142,8 @@ var Controller = (function(budgetCtrl,uiCtrl){
         // add input to data structure
         newItem = budgetCtrl.addItem(input.type,input.description,input.value);
         
-        
+        // add new Item to User Interface
+        uiCtrl.addListItem(newItem,input.type);
         
     }
     
