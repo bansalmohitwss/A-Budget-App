@@ -170,6 +170,20 @@ var uiController = (function(){
             
             // Set focus to first input field that's description
             newFields[0].focus();
+        },
+        
+        displayBudget: function(input){
+            
+            document.querySelector(DOMStrings.budgetLabel).textContent = input.budget;
+            document.querySelector(DOMStrings.incomeLabel).textContent = input.totalIncome;
+            document.querySelector(DOMStrings.expenseLabel).textContent = input.totalExpense;
+            
+            if(input.percentage > 0){
+                document.querySelector(DOMStrings.percentageLabel).textContent = input.percentage+'%';
+            } else {
+                document.querySelector(DOMStrings.percentageLabel).textContent = '---';
+            }
+            
         }
     };
     
@@ -206,7 +220,7 @@ var Controller = (function(budgetCtrl,uiCtrl){
         var budget = budgetCtrl.getBudget();
         
         // show on ui
-        
+        uiCtrl.displayBudget(budget);
     };
     
     
@@ -237,6 +251,15 @@ var Controller = (function(budgetCtrl,uiCtrl){
     return {
         init: function(){
             console.log('Application has started!');
+            uiCtrl.displayBudget({
+                
+                budget: 0,
+                percentage: -1,
+                totalIncome: 0,
+                totalExpense: 0
+                
+            });
+            
             setupEventListeners();
         }
     };
