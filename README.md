@@ -1,6 +1,6 @@
 # A-Budget-App
 
---A Budget App built on JavaScript, HTML and CSS to keep track of monthly incomes, expenses and available Balance.
+-> A Budget App built on JavaScript, HTML and CSS to keep track of monthly incomes, expenses and available Balance.
 
 
 
