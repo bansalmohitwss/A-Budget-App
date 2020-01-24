@@ -5,7 +5,9 @@
          this.id = id;
          this.description = description;
          this.value = value;
+         this.percentage = -1;
      };
+     
      
      
      var Income = function(id,description,value){
@@ -102,6 +104,29 @@
              
          },
          
+         calculatePercentage: function(){
+           
+             data.allItems.exp.forEach(function(curr){
+                
+                 if(data.totals.inc > 0){
+                      curr.percentage = Math.round( ( curr.value / data.totals.inc ) *100 );
+                 } else {
+                     curr.percentage = -1;
+                 }
+             });
+             
+         },
+         
+         getPercentage: function(){
+         
+             var percentages = data.allItems.exp.map(function(curr){
+                
+                 return curr.percentage;
+             });
+           
+             return percentages;
+         },
+         
          getBudget: function(){
              
              return {
@@ -132,7 +157,8 @@ var uiController = (function(){
         incomeLabel: '.budget__income--value',
         expenseLabel: '.budget__expenses--value',
         percentageLabel: '.budget__expenses--percentage',
-        container: '.container'
+        container: '.container',
+        expensePercentageLabel: '.item__percentage'
     };
     
     
@@ -171,6 +197,13 @@ var uiController = (function(){
             
         },
         
+        deleteListItem: function(ID){
+        
+            // we can't delete an item directly, we can remove using it's parent only.
+            var el = document.getElementById(ID);
+            el.parentNode.removeChild(el);
+        },
+        
         clearFields: function(){
             var fields, newFields;
             
@@ -201,6 +234,32 @@ var uiController = (function(){
                 document.querySelector(DOMStrings.percentageLabel).textContent = '---';
             }
             
+        },
+        
+        displayPercentage: function(percentages){
+            
+            // It returns a nodeList
+            
+            var fields = document.querySelectorAll(DOMStrings.expensePercentageLabel);
+            
+            // Creating foreach method for nodeList
+            
+            var nodeListForEach = function(list, forEach){
+                
+                for(var i=0; i<list.length; i++){
+                    forEach(list[i],i);
+                }
+            };
+            
+            nodeListForEach(fields, function(curr, index){
+                
+                if( percentages[index] > 0){
+                    curr.textContent = percentages[index] + '%';
+                } else {
+                    curr.textContent = '---';
+                }
+            });
+            
         }
     };
     
@@ -227,6 +286,20 @@ var Controller = (function(budgetCtrl,uiCtrl){
         
         document.querySelector(domStrings.container).addEventListener('click',CtrldeleteItem);
         
+    };
+    
+    
+    var updatePercentage = function(){
+        var percentages;
+        
+        // calculate percentages 
+        budgetCtrl.calculatePercentage();
+        
+        // get percentages 
+        percentages = budgetCtrl.getPercentage();
+        
+        // display percentage on user interface
+        uiCtrl.displayPercentage(percentages);
     };
     
     
@@ -261,6 +334,8 @@ var Controller = (function(budgetCtrl,uiCtrl){
             uiCtrl.clearFields();
             
             updateBudget();
+            
+            updatePercentage();
         }
     }
     
@@ -279,10 +354,13 @@ var Controller = (function(budgetCtrl,uiCtrl){
              budgetCtrl.deleteItem(type, ID);
             
             // Delete item for user inetface
-            
+            uiCtrl.deleteListItem(itemID);
             
             // update user interface
+            updateBudget();
             
+            // update percentage
+            updatePercentage();
         }
         
     };
